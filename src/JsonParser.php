@@ -47,7 +47,7 @@ final class JsonParser implements IteratorAggregate
     /**
      * @var mixed $source
      */
-    private $source;
+    public $source;
 
     /**
      * Instantiate the class statically.
@@ -194,7 +194,7 @@ final class JsonParser implements IteratorAggregate
      */
     public function traverse(Closure $callback = null): void
     {
-        foreach ($this as $key => $value) {
+        foreach ($this->source as $key => $value) {
             $callback && $callback($value, $key, $this);
         }
     }
