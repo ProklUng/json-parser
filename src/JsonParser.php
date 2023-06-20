@@ -50,7 +50,7 @@ final class JsonParser implements IteratorAggregate
     private $source;
 
     /**
-     * Instantiate the class statically
+     * Instantiate the class statically.
      *
      * @param mixed $source
      *
@@ -65,15 +65,29 @@ final class JsonParser implements IteratorAggregate
     /**
      * Instantiate the class.
      *
-     * @param mixed $source
+     * @param mixed|null $source
      * @throws SyntaxException|Exception
      */
-    public function __construct($source)
+    public function __construct($source = null)
     {
         $this->config = new Config();
+        $this->source = $source;
+
+        $this->init($source);
+    }
+
+    /**
+     * Initializer.
+     *
+     * @param mixed|null $source
+     *
+     * @return void
+     * @throws Exception
+     */
+    private function init($source) : void
+    {
         $this->lexer = new Lexer(new AnySource($source, $this->config));
         $this->parser = new Parser($this->lexer->getIterator(), $this->config);
-        $this->source = $source;
     }
 
     /**
@@ -92,10 +106,13 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * Set the JSON pointers
+     * Set the JSON pointers.
      *
      * @param string[]|array<string, Closure> $pointers
+     *
      * @return self
+     * @throws Exceptions\IntersectingPointersException
+     * @throws Exceptions\InvalidPointerException
      */
     public function pointers(array $pointers): self
     {
@@ -107,11 +124,14 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * Set a JSON pointer
+     * Set a JSON pointer.
      *
-     * @param string $pointer
+     * @param string       $pointer
      * @param Closure|null $callback
+     *
      * @return self
+     * @throws Exceptions\IntersectingPointersException
+     * @throws Exceptions\InvalidPointerException
      */
     public function pointer(string $pointer, Closure $callback = null): self
     {
@@ -121,9 +141,10 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * Set the lazy JSON pointers
+     * Set the lazy JSON pointers.
      *
      * @param string[]|array<string, Closure> $pointers
+     *
      * @return self
      */
     public function lazyPointers(array $pointers): self
@@ -136,12 +157,14 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * Set a lazy JSON pointer
+     * Set a lazy JSON pointer.
      *
-     * @param string $pointer
+     * @param string       $pointer
      * @param Closure|null $callback
      *
      * @return self
+     * @throws Exceptions\IntersectingPointersException
+     * @throws Exceptions\InvalidPointerException
      */
     public function lazyPointer(string $pointer, Closure $callback = null): self
     {
@@ -154,6 +177,8 @@ final class JsonParser implements IteratorAggregate
      * Set a lazy JSON pointer for the whole JSON.
      *
      * @return self
+     * @throws Exceptions\IntersectingPointersException
+     * @throws Exceptions\InvalidPointerException
      */
     public function lazy(): self
     {
@@ -218,9 +243,10 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * The number of bytes to read in each chunk
+     * The number of bytes to read in each chunk.
      *
      * @param int<1, max> $bytes
+     *
      * @return self
      */
     public function bytes(int $bytes): self
@@ -231,9 +257,10 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * Set the patch to apply during a decoding error
+     * Set the patch to apply during a decoding error.
      *
-     * @param mixed $patch
+     * @param mixed|null $patch
+     *
      * @return self
      */
     public function patchDecodingError($patch = null): self
@@ -244,9 +271,10 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * Set the logic to run during a decoding error
+     * Set the logic to run during a decoding error.
      *
      * @param Closure $callback
+     *
      * @return self
      */
     public function onDecodingError(Closure $callback): self
@@ -257,14 +285,30 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * Set the logic to run during a syntax error
+     * Set the logic to run during a syntax error.
      *
      * @param Closure $callback
+     *
      * @return self
      */
     public function onSyntaxError(Closure $callback): self
     {
         $this->config->onSyntaxError = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Set source data.
+     *
+     * @param mixed|null $source
+     *
+     * @return $this
+     * @throws Exception
+     */
+    public function setSource($source) : self
+    {
+        $this->init($source);
 
         return $this;
     }
