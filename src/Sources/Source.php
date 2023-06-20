@@ -63,8 +63,8 @@ abstract class Source implements IteratorAggregate
     /**
      * Instantiate the class.
      *
-     * @param mixed $source
-     * @param Config $config
+     * @param mixed       $source
+     * @param Config|null $config
      */
     final public function __construct(
         $source,

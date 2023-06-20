@@ -63,7 +63,7 @@ final class Parser implements IteratorAggregate
      */
     public function getIterator(): Traversable
     {
-        $state = new State($this->config->pointers, fn () => new self($this->lazyLoad(), clone $this->config));
+        $state = new State($this->config->pointers, function () { new self($this->lazyLoad(), clone $this->config); });
 
         foreach ($this->tokens as $token) {
             if ($this->isFastForwarding) {

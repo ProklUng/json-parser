@@ -84,13 +84,18 @@ final class JsonParser implements IteratorAggregate
      */
     private function init($source) : void
     {
+        if (is_array($source)) {
+            $source = json_encode($source);
+        }
+
+        $this->source = $source;
+
         $this->lexer = new Lexer(new AnySource($source, $this->config));
         $this->parser = new Parser($this->lexer->getIterator(), $this->config);
-        $this->source = $source;
     }
 
     /**
-     * Retrieve the lazily iterable JSON
+     * Retrieve the lazily iterable JSON.
      *
      * @return Traversable<string|int, mixed>
      */
@@ -145,6 +150,8 @@ final class JsonParser implements IteratorAggregate
      * @param string[]|array<string, Closure> $pointers
      *
      * @return self
+     * @throws Exceptions\IntersectingPointersException
+     * @throws Exceptions\InvalidPointerException
      */
     public function lazyPointers(array $pointers): self
     {
@@ -193,7 +200,7 @@ final class JsonParser implements IteratorAggregate
      */
     public function traverse(Closure $callback = null): void
     {
-        foreach ($this->source as $key => $value) {
+        foreach ($this as $key => $value) {
             $callback && $callback($value, $key, $this);
         }
     }
@@ -219,7 +226,7 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * Set the JSON decoder
+     * Set the JSON decoder.
      *
      * @param Decoder $decoder
      * @return self
@@ -232,7 +239,7 @@ final class JsonParser implements IteratorAggregate
     }
 
     /**
-     * Retrieve the parsing progress
+     * Retrieve the parsing progress.
      *
      * @return Progress
      */
