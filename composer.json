@@ -18,7 +18,7 @@
         "role": "Developer"
     }],
     "require": {
-        "php": "^7.4 | ^ 8.2"
+        "php": "^7.4 | ^8.2"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "^7.2",
