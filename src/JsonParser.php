@@ -103,7 +103,7 @@ final class JsonParser implements IteratorAggregate
     {
         try {
             yield from $this->parser;
-        } catch (Exception| SyntaxException $e) {
+        } catch (SyntaxException $e) {
             $e->setPosition($this->lexer->position());
             ($this->config->onSyntaxError)($e);
         }
