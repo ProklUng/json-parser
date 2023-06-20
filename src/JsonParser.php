@@ -71,8 +71,6 @@ final class JsonParser implements IteratorAggregate
     public function __construct($source = null)
     {
         $this->config = new Config();
-        $this->source = $source;
-
         $this->init($source);
     }
 
@@ -88,6 +86,7 @@ final class JsonParser implements IteratorAggregate
     {
         $this->lexer = new Lexer(new AnySource($source, $this->config));
         $this->parser = new Parser($this->lexer->getIterator(), $this->config);
+        $this->source = $source;
     }
 
     /**
