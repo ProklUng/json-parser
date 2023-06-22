@@ -1,6 +1,7 @@
 <?php
 
 use Cerbero\JsonParser\Decoders\JsonDecoder;
+use Cerbero\JsonParser\JsonParser;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,6 +25,11 @@ class JsonDecoderCase extends TestCase
     private $safedJson;
 
     /**
+     * @var string $realJson
+     */
+    private $realJson = '{&quot;id&quot;:&quot;24&quot;,&quot;status&quot;:&quot;\u041e | \u0410&quot;}';
+
+    /**
      * @inheritDoc
      */
     protected function setUp(): void
@@ -32,6 +38,18 @@ class JsonDecoderCase extends TestCase
         $this->validJson = json_encode(['test' => 23]);
         $this->safedJson = htmlspecialchars(json_encode(['test' => 23]));
         $this->invalidJson = '"test":1}';
+    }
+
+    /**
+     * @return void
+     */
+    public function testRealJson() : void
+    {
+        $parser = new JsonParser();
+        $result = $parser->setSource($this->realJson)->toObject();
+
+        $this->assertIsObject($result);
+        $this->assertNotEmpty($result->id);
     }
 
     /**

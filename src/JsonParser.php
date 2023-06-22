@@ -88,6 +88,10 @@ final class JsonParser implements IteratorAggregate
             $source = json_encode($source);
         }
 
+        if (is_string($source)) {
+            $source = htmlspecialchars_decode($source);
+        }
+
         $this->source = $source;
 
         $this->lexer = new Lexer(new AnySource($source, $this->config));
@@ -223,6 +227,15 @@ final class JsonParser implements IteratorAggregate
                 throw $e;
             }
         }
+    }
+
+    /**
+     * @return object
+     * @throws SyntaxException
+     */
+    public function toObject()
+    {
+        return (object)$this->toArray();
     }
 
     /**

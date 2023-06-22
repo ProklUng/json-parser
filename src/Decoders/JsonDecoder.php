@@ -43,7 +43,6 @@ final class JsonDecoder extends AbstractDecoder
             $result = json_decode($this->htmlspecialcharsback($json), $this->decodesToArray, $this->depth, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {}
 
-
         if (is_array($result) || is_object($result)) {
             return $result;
         }
